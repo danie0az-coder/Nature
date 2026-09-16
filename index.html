@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nature Divine — Moda Praia Botânica</title>
+  
+  <!-- Basecoat CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  
+  <!-- Google Fonts: Cormorant Garamond & Inter -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap">
+  
+  <!-- Shell CSS -->
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+</style>
+  
+
+  <style>
+    :root {
+      --accent: #244231;             /* Verde botânico profundo */
+      --accent-text: #173022;        /* Verde botânico escuro acessível */
+      --accent-contrast: #ffffff;
+      --gold: #C9A24B;               /* Dourado solar oficial (#C9A24B) */
+      --gold-light: #f7eedb;
+      --sage: #5e735e;               /* Sálvia */
+      --sand-bg: #fcf9f2;            /* Areia / Creme natural */
+      --sand-card: #f6f1e5;
+      --sand-border: #e6dcce;
+      --terracotta: #a65029;         /* Terracota */
+      --ocean: #4a777a;              /* Azul sutil d'água */
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--sand-bg);
+      color: #2b302c;
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .serif-font {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--accent-text);
+    }
+
+    /* Sol dourado espiral oficial */
+    .icon-sun {
+      display: inline-block;
+      vertical-align: middle;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* Marca d'água do Sol Espiral nos cantos superiores direitos */
+    .manifesto-section,
+    .vibration-section,
+    .gallery-section,
+    .contact-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .manifesto-section .botanical-section,
+    .vibration-section .botanical-section,
+    .gallery-section .botanical-section,
+    .contact-section .botanical-section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .watermark-sun {
+      position: absolute;
+      top: -38px;
+      right: -38px;
+      width: 240px;
+      height: 240px;
+      opacity: 0.10;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .watermark-sun img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      display: block;
+    }
+    .watermark-sun svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .watermark-sun {
+        width: 160px;
+        height: 160px;
+        top: -24px;
+        right: -24px;
+        opacity: 0.09;
+      }
+    }
+
+    /* 1. HEADER (barra de navegação) — conforme referência 1 */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: #F7F3EA;
+      border-bottom: 1px solid #E8DFCF;
+      box-shadow: 0 2px 14px rgba(20, 38, 29, 0.05);
+      transition: all 0.3s ease;
+    }
+    .nav-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0.95rem 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: #14261D;
+    }
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: transform 0.4s ease;
+    }
+    .brand-logo:hover .brand-logo-img {
+      transform: rotate(15deg) scale(1.05);
+    }
+    .brand-logo-icon {
+      width: 42px;
+      height: 42px;
+      color: var(--gold);
+      flex-shrink: 0;
+      transition: transform 0.4s ease;
+    }
+    .brand-logo:hover .brand-logo-icon {
+      transform: rotate(35deg);
+    }
+    .brand-text-block {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .brand-title {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #14261D;
+    }
+    .brand-subtitle {
+      font-family: var(--font-sans);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.26em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+    .nav-menu-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 2.2rem;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-link {
+      text-decoration: none;
+      color: #14261D;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+      position: relative;
+      padding: 0.25rem 0;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0;
+      height: 1.5px;
+      background-color: var(--gold);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover {
+      color: var(--gold);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .btn-wa-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: #1F3A2E;
+      color: #FFFFFF !important;
+      padding: 0.62rem 1.35rem;
+      border-radius: 999px;
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(31, 58, 46, 0.22);
+      transition: all 0.25s ease;
+      border: 1px solid #1F3A2E;
+    }
+    .btn-wa-header:hover {
+      background: #14261D;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(31, 58, 46, 0.32);
+    }
+    .btn-wa-header svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+    }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #14261D;
+      padding: 0.4rem;
+    }
+
+    /* 2. HERO — conforme referência 2 (Full bleed com foto real Amazônia) */
+    .hero-wrapper {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Foto de floresta tropical densa da Amazônia (Pexels) */
+      background-image: 
+        linear-gradient(180deg, rgba(13, 26, 19, 0.68) 0%, rgba(20, 38, 29, 0.74) 100%),
+        url("https://images.pexels.com/photos/15408857/pexels-photo-15408857.jpeg?auto=compress&cs=tinysrgb&w=1920");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      padding: 6.5rem 1.5rem;
+      text-align: center;
+      color: #ffffff;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    /* Sol espiral decorativo no canto superior direito do Hero */
+    .hero-corner-sun {
+      position: absolute;
+      top: 2rem;
+      right: 2.4rem;
+      width: 82px;
+      height: 82px;
+      color: var(--gold);
+      opacity: 0.85;
+      z-index: 2;
+      pointer-events: none;
+      animation: slowRotate 45s linear infinite;
+    }
+    .hero-corner-sun img,
+    .hero-corner-sun svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      filter: drop-shadow(0 2px 10px rgba(0,0,0,0.3));
+    }
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.38rem 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: rgba(13, 26, 19, 0.4);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #F7F3EA;
+      margin-bottom: 1.6rem;
+    }
+    .hero-title-main {
+      font-family: var(--font-serif);
+      font-size: clamp(2.8rem, 6.8vw, 5.4rem);
+      line-height: 1.05;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      margin: 0 0 0.9rem 0;
+      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.45);
+    }
+    .hero-slogan-italic {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.4rem, 2.7vw, 2.1rem);
+      color: #E8C97E;
+      margin: 0 0 1.5rem 0;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      line-height: 1.25;
+    }
+    .hero-desc {
+      font-size: clamp(1rem, 1.7vw, 1.18rem);
+      color: #F4EFE6;
+      max-width: 660px;
+      margin: 0 auto 2.5rem auto;
+      line-height: 1.75;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+      font-weight: 300;
+    }
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .btn-hero-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background-color: #C9A24B;
+      color: #14261D !important;
+      padding: 0.9rem 2.1rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      border: 1px solid #C9A24B;
+      box-shadow: 0 6px 20px rgba(201, 162, 75, 0.35);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .btn-hero-gold:hover {
+      background-color: #D9B35C;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 162, 75, 0.45);
+    }
+    .btn-hero-gold svg {
+      transition: transform 0.2s ease;
+    }
+    .btn-hero-gold:hover svg {
+      transform: translateX(3px);
+    }
+    .btn-hero-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background-color: rgba(31, 58, 46, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: #FFFFFF !important;
+      padding: 0.9rem 2.1rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .btn-hero-outline:hover {
+      background-color: #1F3A2E;
+      border-color: #C9A24B;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    .btn-hero-outline svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Botão flutuante do WhatsApp fixo no canto inferior direito */
+    .floating-wa-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      width: 58px;
+      height: 58px;
+      background-color: #25D366;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      text-decoration: none;
+    }
+    .floating-wa-btn:hover {
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 10px 26px rgba(37, 211, 102, 0.55);
+    }
+    .floating-wa-btn svg {
+      width: 30px;
+      height: 30px;
+      fill: #ffffff;
+    }
+
+    /* Botões Padrão das outras seções */
+    .btn-botanical {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: var(--accent);
+      color: #ffffff;
+      padding: 0.85rem 1.8rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-botanical:hover {
+      background-color: #193123;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(36, 66, 49, 0.2);
+    }
+
+    /* Seções e Espaçamento */
+    .botanical-section {
+      padding: 5.5rem 1.5rem;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .section-tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      line-height: 1.15;
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+    }
+    .section-intro {
+      font-size: 1.1rem;
+      color: #4a544d;
+      max-width: 680px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+    }
+
+    /* Manifesto Botânico */
+    .manifesto-section {
+      background-color: #f7f3ea;
+      border-bottom: 1px solid var(--sand-border);
+    }
+    .manifesto-box {
+      max-width: 840px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+    .manifesto-quote {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+      line-height: 1.3;
+      color: var(--accent-text);
+      font-style: italic;
+      margin-bottom: 2.2rem;
+      position: relative;
+      padding: 0 1rem;
+    }
+    .manifesto-quote::before, .manifesto-quote::after {
+      content: "—";
+      color: var(--gold);
+      margin: 0 0.5rem;
+    }
+    .manifesto-text {
+      font-size: 1.08rem;
+      color: #434c45;
+      line-height: 1.85;
+      margin-bottom: 1.4rem;
+    }
+
+    /* Conexão Orgânica (Pilares) */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .pillar-card {
+      background: #ffffff;
+      border: 1px solid var(--sand-border);
+      border-radius: 16px;
+      padding: 2.4rem 1.8rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .pillar-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 28px rgba(36, 66, 49, 0.07);
+      border-color: #d8cdbe;
+    }
+    .pillar-icon-badge {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 1.4rem auto;
+      border-radius: 50%;
+      background-color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+    }
+    .pillar-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.9rem;
+      color: var(--accent-text);
+    }
+    .pillar-desc {
+      font-size: 0.95rem;
+      color: #515c54;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* Galeria de Criações */
+    .gallery-section {
+      background-color: #fbf8f2;
+      border-bottom: 1px solid var(--sand-border);
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.2rem;
+    }
+    .product-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid var(--sand-border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 36px rgba(36, 66, 49, 0.1);
+    }
+    .product-figure {
+      margin: 0;
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eae2d3;
+    }
+    /* Estilização dos mockups elegantes enquanto aguarda as fotos reais */
+    .product-figure.figure-tropical {
+      background: radial-gradient(circle at 50% 40%, #436248 0%, #1e3827 85%);
+      color: #f5eedb;
+    }
+    .product-figure.figure-blue {
+      background: radial-gradient(circle at 50% 40%, #769b9e 0%, #30585c 85%);
+      color: #f5eedb;
+    }
+    .product-figure.figure-terra {
+      background: radial-gradient(circle at 50% 40%, #a46d50 0%, #513627 85%);
+      color: #f5eedb;
+    }
+    .product-figure-inner {
+      text-align: center;
+      padding: 1.5rem;
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-figure-inner {
+      transform: scale(1.05);
+    }
+    .product-figure-art {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 0.8rem auto;
+      border: 1.5px dashed rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffdf94;
+    }
+    .product-figure-caption {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+      color: #ffffff;
+    }
+    .product-figure-sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      color: #f7eedb;
+    }
+    .badge-collection {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--accent-text);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      z-index: 2;
+    }
+    .badge-variant {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(36, 66, 49, 0.88);
+      color: #f4eee1;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      z-index: 2;
+    }
+    .product-body {
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .product-title {
+      font-size: 1.65rem;
+      margin: 0 0 0.6rem 0;
+      color: var(--accent-text);
+    }
+    .product-desc {
+      font-size: 0.93rem;
+      color: #4b554e;
+      line-height: 1.6;
+      margin-bottom: 1.3rem;
+      flex-grow: 1;
+    }
+    .product-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.6rem;
+    }
+    .product-tag {
+      background: #f1ebd8;
+      color: #3b423d;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.28rem 0.65rem;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+    .btn-wa-product {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: #244231;
+      color: #ffffff;
+      padding: 0.78rem 1.2rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      border: 1px solid #244231;
+    }
+    .btn-wa-product:hover {
+      background: #172b20;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(36, 66, 49, 0.2);
+    }
+
+    /* Tríade Vital — A Nossa Vibração */
+    .vibration-section {
+      background-color: #f5efe2;
+      border-bottom: 1px solid var(--sand-border);
+    }
+    .vibration-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .vibration-card {
+      background: #ffffff;
+      padding: 2.6rem 2rem;
+      border-radius: 18px;
+      border: 1px solid var(--sand-border);
+      text-align: center;
+      position: relative;
+    }
+    .vibration-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.4rem auto;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fcf4e4 0%, #fae8c6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(212, 163, 71, 0.16);
+    }
+    .vibration-icon-img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 50%;
+      display: block;
+    }
+    .vibration-card-title {
+      font-size: 1.7rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent-text);
+    }
+    .vibration-card-desc {
+      font-size: 0.95rem;
+      color: #4d5750;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* Quiz Interativo de Energia */
+    .quiz-section {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--sand-border);
+    }
+    .quiz-card {
+      background: #fbf8f2;
+      border: 1px solid var(--sand-border);
+      border-radius: 22px;
+      padding: 2.8rem 2.4rem;
+      max-width: 780px;
+      margin: 0 auto;
+      box-shadow: 0 8px 24px rgba(36, 66, 49, 0.04);
+    }
+    .quiz-step {
+      margin-bottom: 2rem;
+      padding-bottom: 1.8rem;
+      border-bottom: 1px dashed var(--sand-border);
+    }
+    .quiz-step:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0.5rem;
+    }
+    .quiz-question-title {
+      font-size: 1.25rem;
+      margin: 0 0 1.1rem 0;
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .quiz-question-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+    }
+    .quiz-opt-btn {
+      background: #ffffff;
+      border: 1.5px solid #dcd4c6;
+      border-radius: 12px;
+      padding: 0.9rem 0.8rem;
+      text-align: center;
+      font-size: 0.9rem;
+      font-family: var(--font-sans);
+      color: #3b423d;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 78px;
+    }
+    .quiz-opt-btn:hover {
+      border-color: var(--gold);
+      background: #fbf7ee;
+    }
+    .quiz-opt-btn.selected {
+      background: #244231;
+      color: #ffffff;
+      border-color: #244231;
+      box-shadow: 0 4px 12px rgba(36, 66, 49, 0.18);
+    }
+    .quiz-opt-btn.selected .opt-sub {
+      color: #d1e2d6;
+    }
+    .opt-main {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .opt-sub {
+      font-size: 0.76rem;
+      color: #6d756f;
+    }
+
+    .quiz-result-box {
+      margin-top: 2rem;
+      padding: 2.2rem;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 2px solid var(--gold);
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+      display: none;
+    }
+    .quiz-result-title {
+      font-size: 1.8rem;
+      color: var(--accent-text);
+      margin: 0.5rem 0 0.8rem 0;
+    }
+    .quiz-result-desc {
+      font-size: 1rem;
+      color: #4b554e;
+      max-width: 540px;
+      margin: 0 auto 1.6rem auto;
+      line-height: 1.6;
+    }
+
+    /* Seção Contato */
+    .contact-section {
+      background: radial-gradient(circle at 50% 50%, #f6f0e2 0%, #efe7d6 100%);
+      text-align: center;
+      border-bottom: 1px solid var(--sand-border);
+    }
+    .contact-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+    .btn-instagram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: #ffffff;
+      color: #8a3b2b;
+      padding: 0.85rem 1.8rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      border: 1.5px solid #d49a88;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-instagram:hover {
+      background-color: #8a3b2b;
+      color: #ffffff;
+      border-color: #8a3b2b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(138, 59, 43, 0.2);
+    }
+    .contact-phone-info {
+      font-size: 0.98rem;
+      color: #4e5751;
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: #1a2f23;
+      color: #e5ded3;
+      padding: 4.5rem 1.5rem 3rem 1.5rem;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+    }
+    .footer-slogan {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.2rem;
+      color: #e2ba74;
+      margin-bottom: 1.8rem;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .footer-note {
+      font-size: 0.92rem;
+      color: #b2bea5;
+      margin-bottom: 2rem;
+    }
+    .footer-links-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.4rem;
+      margin-bottom: 2.8rem;
+    }
+    .btn-footer-wa {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #2b503b;
+      color: #ffffff;
+      padding: 0.75rem 1.6rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      border: 1px solid #3d6f52;
+      transition: all 0.2s ease;
+    }
+    .btn-footer-wa:hover {
+      background: #39674d;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+    .footer-ig-link {
+      color: #f7eedb;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+    .footer-ig-link:hover {
+      color: #ffdf94;
+    }
+    .footer-bottom-copy {
+      font-size: 0.8rem;
+      color: #8c9b91;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Animações e Responsividade */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 960px) {
+      .product-grid, .pillars-grid, .vibration-grid {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+      .nav-menu-wrapper {
+        display: none;
+      }
+      .nav-menu-wrapper.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #F7F3EA;
+        border-bottom: 1px solid #E8DFCF;
+        padding: 1.5rem;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+        gap: 1.2rem;
+      }
+      .nav-menu-wrapper.open .nav-links {
+        flex-direction: column;
+        gap: 1.2rem;
+        width: 100%;
+        text-align: center;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .hero-corner-sun {
+        top: 1rem;
+        right: 1rem;
+        width: 56px;
+        height: 56px;
+      }
+      .hero-wrapper {
+        min-height: 82vh;
+        padding: 4.5rem 1.2rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .brand-title {
+        font-size: 1.15rem;
+        letter-spacing: 0.12em;
+      }
+      .brand-subtitle {
+        font-size: 0.55rem;
+        letter-spacing: 0.2em;
+      }
+      .btn-wa-header span {
+        display: inline;
+      }
+      .hero-cta-group {
+        flex-direction: column;
+        width: 100%;
+      }
+      .btn-hero-gold, .btn-hero-outline {
+        width: 100%;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      .site-header, .hero-cta-group, .btn-wa-product, .quiz-section, .btn-wa-header, .btn-botanical, .btn-instagram, .mobile-menu-btn {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SVG OFICIAL: SOL ESPIRAL NATURE DIVINE (#C9A24B) -->
+  <svg style="display: none;" aria-hidden="true">
+    <symbol id="spiral-sun" viewBox="0 0 100 100">
+      <!-- Círculo central vazado com traço fino e elegante -->
+      <circle cx="50" cy="50" r="10.5" fill="none" stroke="currentColor" stroke-width="2.4" />
+      <!-- Raios em curva espiral que irradiam do centro -->
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M 50 36 C 54 28 62 21 71 15" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(22.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(45 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(67.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(90 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(112.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(135 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(157.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(180 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(202.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(225 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(247.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(270 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(292.5 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(315 50 50)" />
+        <path d="M 50 36 C 54 28 62 21 71 15" transform="rotate(337.5 50 50)" />
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- 1) HEADER (barra de navegação) — conforme referência 1 -->
+  <header class="site-header">
+    <div class="nav-container">
+      <!-- Lado esquerdo: Logotipo Oficial da marca + Wordmark "NATURE DIVINE" / "WEAR & ESSENCE" -->
+      <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+      <a href="#" class="brand-logo" aria-label="Nature Divine — Início">
+        <img src="logo.png" alt="Nature Divine Logo" class="brand-logo-img" width="44" height="44">
+        <div class="brand-text-block">
+          <span class="brand-title">Nature Divine</span>
+          <span class="brand-subtitle">Wear &amp; Essence</span>
+        </div>
+      </a>
+
+      <!-- Centro: Menu de navegação com 4 itens em caixa alta -->
+      <div class="nav-menu-wrapper" id="navMenuWrapper">
+        <ul class="nav-links">
+          <li><a href="#manifesto" class="nav-link">Essência</a></li>
+          <li><a href="#colecao" class="nav-link">Coleção</a></li>
+          <li><a href="#quiz" class="nav-link">Energia</a></li>
+          <li><a href="#contato" class="nav-link">Contato</a></li>
+        </ul>
+      </div>
+
+      <!-- Extrema direita: Botão CTA WhatsApp verde escuro (#1F3A2E) + Botão menu mobile -->
+      <div class="nav-actions">
+        <a href="https://wa.me/5562995076301" target="_blank" rel="noopener noreferrer" class="btn-wa-header" aria-label="Falar conosco no WhatsApp">
+          <!-- Ícone oficial WhatsApp -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.59 20.15 12.04 20.15C10.56 20.15 9.12 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67ZM8.95 7.42C8.75 7.42 8.44 7.5 8.24 7.72C8.04 7.93 7.47 8.47 7.47 9.56C7.47 10.65 8.26 11.71 8.37 11.86C8.48 12.01 9.94 14.26 12.18 15.23C12.71 15.46 13.13 15.6 13.45 15.7C13.98 15.87 14.47 15.85 14.86 15.79C15.29 15.73 16.18 15.25 16.37 14.73C16.56 14.21 16.56 13.76 16.5 13.67C16.44 13.58 16.3 13.52 16.09 13.42C15.88 13.31 14.86 12.81 14.67 12.74C14.48 12.67 14.34 12.64 14.2 12.85C14.06 13.06 13.66 13.52 13.54 13.67C13.42 13.82 13.3 13.84 13.09 13.73C12.88 13.63 12.21 13.41 11.41 12.7C10.79 12.15 10.37 11.46 10.25 11.25C10.13 11.04 10.24 10.93 10.34 10.83C10.43 10.74 10.55 10.58 10.66 10.46C10.77 10.33 10.81 10.24 10.88 10.1C10.95 9.96 10.91 9.84 10.86 9.73C10.81 9.63 10.38 8.58 10.2 8.14C10.02 7.72 9.84 7.78 9.71 7.77C9.58 7.76 9.44 7.76 9.3 7.76C9.16 7.76 9.02 7.76 8.95 7.42Z"/>
+          </svg>
+          <span>WhatsApp</span>
+        </a>
+
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu de navegação">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Botão flutuante do WhatsApp fixo no canto inferior direito -->
+  <a href="https://wa.me/5562995076301" target="_blank" rel="noopener noreferrer" class="floating-wa-btn" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.59 20.15 12.04 20.15C10.56 20.15 9.12 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67ZM8.95 7.42C8.75 7.42 8.44 7.5 8.24 7.72C8.04 7.93 7.47 8.47 7.47 9.56C7.47 10.65 8.26 11.71 8.37 11.86C8.48 12.01 9.94 14.26 12.18 15.23C12.71 15.46 13.13 15.6 13.45 15.7C13.98 15.87 14.47 15.85 14.86 15.79C15.29 15.73 16.18 15.25 16.37 14.73C16.56 14.21 16.56 13.76 16.5 13.67C16.44 13.58 16.3 13.52 16.09 13.42C15.88 13.31 14.86 12.81 14.67 12.74C14.48 12.67 14.34 12.64 14.2 12.85C14.06 13.06 13.66 13.52 13.54 13.67C13.42 13.82 13.3 13.84 13.09 13.73C12.88 13.63 12.21 13.41 11.41 12.7C10.79 12.15 10.37 11.46 10.25 11.25C10.13 11.04 10.24 10.93 10.34 10.83C10.43 10.74 10.55 10.58 10.66 10.46C10.77 10.33 10.81 10.24 10.88 10.1C10.95 9.96 10.91 9.84 10.86 9.73C10.81 9.63 10.38 8.58 10.2 8.14C10.02 7.72 9.84 7.78 9.71 7.77C9.58 7.76 9.44 7.76 9.3 7.76C9.16 7.76 9.02 7.76 8.95 7.42Z"/>
+    </svg>
+  </a>
+
+  <main>
+    <!-- 2) HERO — conforme referência 2 -->
+    <!-- NOTA PARA O CLIENTE: Para alterar a foto de fundo, modifique a URL da imagem de floresta tropical no background-image da classe .hero-wrapper no CSS acima. -->
+    <section class="hero-wrapper">
+      <!-- Logo Oficial decorativa no canto superior direito do Hero -->
+      <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+      <div class="hero-corner-sun" aria-hidden="true">
+        <img src="logo.png" alt="" width="82" height="82">
+      </div>
+
+      <div class="hero-content">
+        <!-- Badge no topo, centralizado, com borda fina -->
+        <span class="hero-badge">Alta Moda Praia Botânica</span>
+
+        <!-- Título principal em serifada grande, branca e centralizada -->
+        <h1 class="hero-title-main">Nature Divine</h1>
+
+        <!-- Slogan em itálico logo abaixo -->
+        <p class="hero-slogan-italic">Celebre a sua essência. Vista a natureza.</p>
+
+        <!-- Parágrafo descritivo -->
+        <p class="hero-desc">
+          Biquínis e conjuntos criados para mulheres que desejam se sentir autênticas, confiantes e conectadas com a sua mais pura energia sob a luz do sol.
+        </p>
+
+        <!-- Dois botões lado a lado com cantos arredondados -->
+        <div class="hero-cta-group">
+          <!-- Botão "Ver Coleção" com fundo dourado #C9A24B -->
+          <a href="#colecao" class="btn-hero-gold">
+            Ver Coleção
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+
+          <!-- Botão "Pedir pelo WhatsApp" -->
+          <a href="https://wa.me/5562995076301?text=Olá!%20Gostaria%20de%20conhecer%20a%20coleção%20da%20Nature%20Divine." target="_blank" rel="noopener noreferrer" class="btn-hero-outline">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.59 20.15 12.04 20.15C10.56 20.15 9.12 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67ZM8.95 7.42C8.75 7.42 8.44 7.5 8.24 7.72C8.04 7.93 7.47 8.47 7.47 9.56C7.47 10.65 8.26 11.71 8.37 11.86C8.48 12.01 9.94 14.26 12.18 15.23C12.71 15.46 13.13 15.6 13.45 15.7C13.98 15.87 14.47 15.85 14.86 15.79C15.29 15.73 16.18 15.25 16.37 14.73C16.56 14.21 16.56 13.76 16.5 13.67C16.44 13.58 16.3 13.52 16.09 13.42C15.88 13.31 14.86 12.81 14.67 12.74C14.48 12.67 14.34 12.64 14.2 12.85C14.06 13.06 13.66 13.52 13.54 13.67C13.42 13.82 13.3 13.84 13.09 13.73C12.88 13.63 12.21 13.41 11.41 12.7C10.79 12.15 10.37 11.46 10.25 11.25C10.13 11.04 10.24 10.93 10.34 10.83C10.43 10.74 10.55 10.58 10.66 10.46C10.77 10.33 10.81 10.24 10.88 10.1C10.95 9.96 10.91 9.84 10.86 9.73C10.81 9.63 10.38 8.58 10.2 8.14C10.02 7.72 9.84 7.78 9.71 7.77C9.58 7.76 9.44 7.76 9.3 7.76C9.16 7.76 9.02 7.76 8.95 7.42Z"/>
+            </svg>
+            Pedir pelo WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3) MANIFESTO BOTÂNICO -->
+    <section class="manifesto-section" id="manifesto">
+      <!-- Marca d'água da Logo Oficial da marca (opacidade sutil 8-12%) -->
+      <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+      <div class="watermark-sun" aria-hidden="true">
+        <img src="logo.png" alt="" width="240" height="240" loading="lazy">
+      </div>
+      <div class="botanical-section">
+        <div class="manifesto-box">
+          <div class="section-tagline">
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+              <use href="#spiral-sun"/>
+            </svg>
+            Manifesto Botânico
+          </div>
+          <blockquote class="manifesto-quote">
+            Nascemos para celebrar a liberdade, a terra e a sua essência mais espontânea.
+          </blockquote>
+          <p class="manifesto-text">
+            A Nature Divine floresceu do fascínio profundo pelos ciclos orgânicos, pelas folhagens tropicais e pelo calor dourado do sol na pele. Acreditamos que a verdadeira elegância não impõe moldes; ela liberta.
+          </p>
+          <p class="manifesto-text">
+            Cada linha, costura e amarração é pensada para abraçar a diversidade da forma feminina com leveza sensorial, permitindo que cada mulher sinta a pulsação da própria energia com total conforto e plenitude.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4) CONEXÃO ORGÂNICA -->
+    <section class="botanical-section">
+      <div style="text-align: center;">
+        <span class="section-tagline">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+            <use href="#spiral-sun"/>
+          </svg>
+          Harmonia e Matéria
+        </span>
+        <h2 class="section-title">Conexão Orgânica</h2>
+        <p class="section-intro">
+          Paleta inspirada na vegetação nativa, nas areias quentes e nos tons minerais das nossas praias.
+        </p>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon-badge">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">Liberdade em Movimento</h3>
+          <p class="pillar-desc">
+            Cortes fluidos e amarrações anatômicas desenvolvidos para acompanhar o corpo com suavidade e naturalidade sob a brisa litorânea.
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon-badge">
+            <svg class="icon-sun" width="30" height="30" viewBox="0 0 100 100" aria-hidden="true">
+              <use href="#spiral-sun"/>
+            </svg>
+          </div>
+          <h3 class="pillar-title">Detalhes Preciosos</h3>
+          <p class="pillar-desc">
+            Acabamentos artesanais com metais banhados resistentes à água do mar e raios UV.
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon-badge">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">Curadoria Exclusiva</h3>
+          <p class="pillar-desc">
+            Séries limitadas com tecidos nobres, toques aveludados e acabamentos manuais minuciosos para valorizar a exclusividade de cada mulher.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5) GALERIA DE CRIAÇÕES -->
+    <section class="gallery-section" id="colecao">
+      <!-- Marca d'água da Logo Oficial da marca (opacidade sutil 8-12%) -->
+      <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+      <div class="watermark-sun" aria-hidden="true">
+        <img src="logo.png" alt="" width="240" height="240" loading="lazy">
+      </div>
+      <div class="botanical-section">
+        <div style="text-align: center;">
+          <span class="section-tagline">
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+              <use href="#spiral-sun"/>
+            </svg>
+            Peças Emblemáticas
+          </span>
+          <h2 class="section-title">Galeria de Criações</h2>
+          <p class="section-intro">
+            Molduras das nossas silhuetas emblemáticas. Peças exclusivas criadas para harmonizar com a sua luz interior.
+          </p>
+        </div>
+
+        <div class="product-grid">
+          <!-- CARD 1: ESSÊNCIA TROPICAL -->
+          <article class="product-card">
+            <!-- NOTA PARA O CLIENTE: Substitua o conteúdo interno da figure pela tag <img src="caminho-da-sua-foto.jpg" alt="Essência Tropical"> quando as fotos reais estiverem prontas. -->
+            <figure class="product-figure figure-tropical" data-nome="Essência Tropical">
+              <span class="badge-collection">Coleção Biquíni de Fita</span>
+              <span class="badge-variant">Verde &amp; Amarelo</span>
+              <div class="product-figure-inner">
+                <div class="product-figure-art" aria-hidden="true">
+                  <svg width="42" height="42" viewBox="0 0 100 100">
+                    <use href="#spiral-sun"/>
+                  </svg>
+                </div>
+                <div class="product-figure-caption">Essência Tropical</div>
+                <div class="product-figure-sub">Verde Botânico &bull; Amarelo Solar</div>
+              </div>
+            </figure>
+            <div class="product-body">
+              <h3 class="product-title">Essência Tropical</h3>
+              <p class="product-desc">
+                Biquíni em verde botânico profundo com detalhes em amarelo solar radiante, expressando vigor e frescor.
+              </p>
+              <div class="product-tags">
+                <span class="product-tag">Tecido Biodegradável</span>
+                <span class="product-tag">Proteção UV 50+</span>
+                <span class="product-tag">Amarração Regulável</span>
+              </div>
+              <a href="https://wa.me/5562995076301?text=Olá,%20gostaria%20de%20pedir%20e%20saber%20mais%20detalhes%20do%20modelo%20*Essência%20Tropical*!" target="_blank" rel="noopener noreferrer" class="btn-wa-product">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                Pedir pelo WhatsApp
+              </a>
+            </div>
+          </article>
+
+          <!-- CARD 2: DIVINE BLUE -->
+          <article class="product-card">
+            <!-- NOTA PARA O CLIENTE: Substitua o conteúdo interno da figure pela tag <img src="caminho-da-sua-foto.jpg" alt="Divine Blue"> quando as fotos reais estiverem prontas. -->
+            <figure class="product-figure figure-blue" data-nome="Divine Blue">
+              <span class="badge-collection">Coleção Biquíni de Fita</span>
+              <span class="badge-variant">Azul Cristal &bull; Ouro</span>
+              <div class="product-figure-inner">
+                <div class="product-figure-art" aria-hidden="true">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="m10 15 5-3-5-3v6Z"></path>
+                  </svg>
+                </div>
+                <div class="product-figure-caption">Divine Blue</div>
+                <div class="product-figure-sub">Águas Claras &bull; Medalhão Áureo</div>
+              </div>
+            </figure>
+            <div class="product-body">
+              <h3 class="product-title">Divine Blue</h3>
+              <p class="product-desc">
+                Biquíni azul-claro sereno adornado com medalhão dourado exclusivo, evocando as águas cristalinas e a divindade feminina.
+              </p>
+              <div class="product-tags">
+                <span class="product-tag">Medalhão Banhado a Ouro</span>
+                <span class="product-tag">Toque Acetinado</span>
+                <span class="product-tag">Design Anatômico</span>
+              </div>
+              <a href="https://wa.me/5562995076301?text=Olá,%20gostaria%20de%20pedir%20e%20saber%20mais%20detalhes%20do%20modelo%20*Divine%20Blue*!" target="_blank" rel="noopener noreferrer" class="btn-wa-product">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                Pedir pelo WhatsApp
+              </a>
+            </div>
+          </article>
+
+          <!-- CARD 3: TERRA & MAR -->
+          <article class="product-card">
+            <!-- NOTA PARA O CLIENTE: Substitua o conteúdo interno da figure pela tag <img src="caminho-da-sua-foto.jpg" alt="Terra & Mar"> quando as fotos reais estiverem prontas. -->
+            <figure class="product-figure figure-terra" data-nome="Terra & Mar">
+              <span class="badge-collection">Coleção Biquíni de Fita</span>
+              <span class="badge-variant">Nuances Terrosas</span>
+              <div class="product-figure-inner">
+                <div class="product-figure-art" aria-hidden="true">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </div>
+                <div class="product-figure-caption">Terra &amp; Mar</div>
+                <div class="product-figure-sub">Texturas Minerais &bull; Solo &amp; Sal</div>
+              </div>
+            </figure>
+            <div class="product-body">
+              <h3 class="product-title">Terra &amp; Mar</h3>
+              <p class="product-desc">
+                Conjunto azul-claro suave em comunhão com nuances terrosas e texturas minerais, conectando a brisa marinha à estabilidade do solo.
+              </p>
+              <div class="product-tags">
+                <span class="product-tag">Conjunto Completo</span>
+                <span class="product-tag">Forro Duplo Ultra-Soft</span>
+                <span class="product-tag">Sensação Segunda Pele</span>
+              </div>
+              <a href="https://wa.me/5562995076301?text=Olá,%20gostaria%20de%20pedir%20e%20saber%20mais%20detalhes%20do%20conjunto%20*Terra%20%26%20Mar*!" target="_blank" rel="noopener noreferrer" class="btn-wa-product">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                Pedir pelo WhatsApp
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6) TRÍADE VITAL — A NOSSA VIBRAÇÃO -->
+    <section class="vibration-section" id="vibracao">
+      <!-- Marca d'água da Logo Oficial da marca (opacidade sutil 8-12%) -->
+      <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+      <div class="watermark-sun" aria-hidden="true">
+        <img src="logo.png" alt="" width="240" height="240" loading="lazy">
+      </div>
+      <div class="botanical-section">
+        <div style="text-align: center;">
+          <span class="section-tagline">
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+              <use href="#spiral-sun"/>
+            </svg>
+            Tríade Vital
+          </span>
+          <h2 class="section-title">A Nossa Vibração</h2>
+          <p class="section-intro">
+            Três pilares que regem a confecção de cada peça e sustentam o nosso propósito de vestir a mulher consciente.
+          </p>
+        </div>
+
+        <div class="vibration-grid">
+          <div class="vibration-card">
+            <div class="vibration-icon">
+              <!-- Logo Oficial da marca dentro do círculo -->
+              <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+              <img src="logo.png" alt="Nature Divine — Liberdade" class="vibration-icon-img" width="48" height="48">
+            </div>
+            <h3 class="vibration-card-title">Liberdade</h3>
+            <p class="vibration-card-desc">
+              Modelagens fluidas que abraçam o corpo sem cercear movimentos, para você viver o calor e o vento em total soltura.
+            </p>
+          </div>
+
+          <div class="vibration-card">
+            <div class="vibration-icon">
+              <!-- Logo Oficial da marca dentro do círculo -->
+              <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+              <img src="logo.png" alt="Nature Divine — Natureza" class="vibration-icon-img" width="48" height="48">
+            </div>
+            <h3 class="vibration-card-title">Natureza</h3>
+            <p class="vibration-card-desc">
+              Cores puras extraídas da flora, das correntes marítimas e do barro fértil, nutrindo o espírito em sintonia com a terra.
+            </p>
+          </div>
+
+          <div class="vibration-card">
+            <div class="vibration-icon">
+              <!-- Logo Oficial da marca dentro do círculo -->
+              <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+              <img src="logo.png" alt="Nature Divine — Essência" class="vibration-icon-img" width="48" height="48">
+            </div>
+            <h3 class="vibration-card-title">Essência</h3>
+            <p class="vibration-card-desc">
+              Peças desenhadas para revelar a sua energia mais autêntica e iluminar a sua presença.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7) SEÇÃO INTERATIVA: QUIZ DE ENERGIA -->
+    <section class="quiz-section" id="quiz">
+      <div class="botanical-section">
+        <div style="text-align: center;">
+          <span class="section-tagline">
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+              <use href="#spiral-sun"/>
+            </svg>
+            Sintonia Pessoal
+          </span>
+          <h2 class="section-title">Qual é a energia do seu momento?</h2>
+          <p class="section-intro">
+            Responda a 3 perguntas intuitivas para descobrir qual silhueta da Nature Divine vibra com o seu estado de espírito hoje.
+          </p>
+        </div>
+
+        <div class="quiz-card">
+          <!-- Pergunta 1 -->
+          <div class="quiz-step">
+            <h3 class="quiz-question-title">
+              <span class="quiz-question-num">1</span>
+              Qual cenário mais te chama?
+            </h3>
+            <div class="quiz-options" data-question="q1">
+              <button type="button" class="quiz-opt-btn" data-value="tropical">
+                <span class="opt-main">Mata tropical vívida</span>
+                <span class="opt-sub">Sol entre as folhagens</span>
+              </button>
+              <button type="button" class="quiz-opt-btn" data-value="blue">
+                <span class="opt-main">Mar cristalino</span>
+                <span class="opt-sub">Águas calmas e límpidas</span>
+              </button>
+              <button type="button" class="quiz-opt-btn" data-value="terra">
+                <span class="opt-main">Dunas e falésias</span>
+                <span class="opt-sub">Areia quente &amp; terra</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pergunta 2 -->
+          <div class="quiz-step">
+            <h3 class="quiz-question-title">
+              <span class="quiz-question-num">2</span>
+              Qual sensação você busca hoje?
+            </h3>
+            <div class="quiz-options" data-question="q2">
+              <button type="button" class="quiz-opt-btn" data-value="tropical">
+                <span class="opt-main">Vitalidade &amp; Expansão</span>
+                <span class="opt-sub">Calor radiante e alegria</span>
+              </button>
+              <button type="button" class="quiz-opt-btn" data-value="blue">
+                <span class="opt-main">Serenidade &amp; Graça</span>
+                <span class="opt-sub">Leveza e fluidez interior</span>
+              </button>
+              <button type="button" class="quiz-opt-btn" data-value="terra">
+                <span class="opt-main">Enraizamento &amp; Conexão</span>
+                <span class="opt-sub">Equilíbrio e firmeza natural</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pergunta 3 -->
+          <div class="quiz-step">
+            <h3 class="quiz-question-title">
+              <span class="quiz-question-num">3</span>
+              Qual cor te representa agora?
+            </h3>
+            <div class="quiz-options" data-question="q3">
+              <button type="button" class="quiz-opt-btn" data-value="tropical">
+                <span class="opt-main">Verde &amp; Dourado Solar</span>
+                <span class="opt-sub">Folhas frescas e luz</span>
+              </button>
+              <button type="button" class="quiz-opt-btn" data-value="blue">
+                <span class="opt-main">Azul Celeste Suave</span>
+                <span class="opt-sub">Oceano aberto e céu puro</span>
+              </button>
+              <button type="button" class="quiz-opt-btn" data-value="terra">
+                <span class="opt-main">Terracota &amp; Areia</span>
+                <span class="opt-sub">Argila viva e tons minerais</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Resultado do Quiz -->
+          <div class="quiz-result-box" id="quizResultBox">
+            <div class="section-tagline">
+              <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+                <use href="#spiral-sun"/>
+              </svg>
+              Sua Conexão Ideal
+            </div>
+            <h4 class="quiz-result-title" id="quizResultTitle">Essência Tropical</h4>
+            <p class="quiz-result-desc" id="quizResultDesc">
+              A sua energia pede a exuberância do verde botânico e a iluminação solar para irradiar entusiasmo e autenticidade.
+            </p>
+            <a href="#" id="quizWaBtn" target="_blank" rel="noopener noreferrer" class="btn-botanical">
+              Conversar sobre este modelo
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8) CONTATO -->
+    <section class="contact-section" id="contato">
+      <!-- Marca d'água da Logo Oficial da marca (opacidade sutil 8-12%) -->
+      <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+      <div class="watermark-sun" aria-hidden="true">
+        <img src="logo.png" alt="" width="240" height="240" loading="lazy">
+      </div>
+      <div class="botanical-section">
+        <span class="section-tagline">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 100 100" aria-hidden="true">
+            <use href="#spiral-sun"/>
+          </svg>
+          Atendimento Personalizado
+        </span>
+        <h2 class="section-title">Entre em Contato</h2>
+        <p class="section-intro" style="margin-bottom: 2rem;">
+          Vamos conversar sobre qual modelo combina com a sua energia?
+        </p>
+
+        <div class="contact-cta-row">
+          <a href="https://wa.me/5562995076301" target="_blank" rel="noopener noreferrer" class="btn-botanical">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            Conversar no WhatsApp
+          </a>
+
+          <a href="https://instagram.com/naturedivine_wer" target="_blank" rel="noopener noreferrer" class="btn-instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            Siga no Instagram
+          </a>
+        </div>
+
+        <p class="contact-phone-info">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gold);" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          <strong>Telefone &amp; WhatsApp:</strong> (62) 99507-6301 &bull; Atendimento acolhedor e humanizado
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 9) FOOTER -->
+  <footer class="site-footer">
+    <!-- Logo Oficial da Nature Divine Centralizada -->
+    <!-- NOTA PARA O CLIENTE: Salve o arquivo Logo_Nature.png como "logo.png" na mesma pasta do site (ao lado do index.html) antes de publicar. -->
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 0.4rem;">
+      <img src="logo.png" alt="Nature Divine Logo" width="56" height="56" style="width: 56px; height: 56px; object-fit: contain; border-radius: 50%; margin-bottom: 0.8rem; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
+      <div class="footer-logo">Nature Divine</div>
+    </div>
+    <div class="footer-slogan">
+      &ldquo;Nascer para celebrar a liberdade, a natureza e a sua essência.&rdquo;
+    </div>
+    <p class="footer-note">
+      Feito com conexão botânica &amp; carinho sob a brisa brasileira.
+    </p>
+
+    <div class="footer-links-row">
+      <a href="https://wa.me/5562995076301" target="_blank" rel="noopener noreferrer" class="btn-footer-wa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        Fale conosco no WhatsApp
+      </a>
+      <a href="https://instagram.com/naturedivine_wer" target="_blank" rel="noopener noreferrer" class="footer-ig-link">
+        Siga @naturedivine_wer no Instagram
+      </a>
+    </div>
+
+    <div class="footer-bottom-copy">
+      &copy; <span id="currentYear"></span> Nature Divine Wear &amp; Essence &bull; Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Atualiza ano atual
+      const yearEl = document.getElementById('currentYear');
+      if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+      }
+
+      // Menu mobile toggle
+      const mobileBtn = document.getElementById('mobileMenuBtn');
+      const navMenuWrapper = document.getElementById('navMenuWrapper');
+      if (mobileBtn && navMenuWrapper) {
+        mobileBtn.addEventListener('click', () => {
+          navMenuWrapper.classList.toggle('open');
+        });
+
+        // Fechar ao clicar em qualquer link do menu
+        navMenuWrapper.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            navMenuWrapper.classList.remove('open');
+          });
+        });
+      }
+
+      // Quiz de Energia
+      const answers = { q1: null, q2: null, q3: null };
+      const optionButtons = document.querySelectorAll('.quiz-opt-btn');
+      const resultBox = document.getElementById('quizResultBox');
+      const resultTitle = document.getElementById('quizResultTitle');
+      const resultDesc = document.getElementById('quizResultDesc');
+      const waBtn = document.getElementById('quizWaBtn');
+
+      const modelData = {
+        tropical: {
+          name: "Essência Tropical",
+          desc: "A sua energia pede a vibração das folhagens verdes e a vivacidade solar. O biquíni Essência Tropical traz tons botânicos com toques dourados para valorizar a sua presença luminosa e espontânea."
+        },
+        blue: {
+          name: "Divine Blue",
+          desc: "O seu momento ressoa com serenidade, elegância e fluidez cristalina. O modelo Divine Blue, coroado com o medalhão dourado exclusivo, equilibra graça e nobreza sob o sol."
+        },
+        terra: {
+          name: "Terra & Mar",
+          desc: "A sua essência busca ancoragem, profundidade e harmonia com os minerais. O conjunto Terra & Mar conjuga tons terrosos e azul celestial para abraçar a sua silhueta com total plenitude."
+        }
+      };
+
+      optionButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const parentQuestion = btn.closest('.quiz-options');
+          const qId = parentQuestion.dataset.question;
+          const val = btn.dataset.value;
+
+          // Remove selected dos irmãos
+          parentQuestion.querySelectorAll('.quiz-opt-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+
+          answers[qId] = val;
+          evaluateQuiz();
+        });
+      });
+
+      function evaluateQuiz() {
+        if (!answers.q1 || !answers.q2 || !answers.q3) {
+          return; // ainda não respondeu as 3
+        }
+
+        // Contagem de votos
+        const counts = { tropical: 0, blue: 0, terra: 0 };
+        counts[answers.q1]++;
+        counts[answers.q2]++;
+        counts[answers.q3]++;
+
+        // Determina o modelo vencedor
+        let maxVal = 0;
+        let winner = 'tropical';
+
+        // Preferência para empate: se q1 ou q2 tiver peso
+        for (const [key, count] of Object.entries(counts)) {
+          if (count > maxVal) {
+            maxVal = count;
+            winner = key;
+          }
+        }
+
+        // Se houver empate triplo (1, 1, 1), priorizamos q2 (sensação buscada)
+        if (maxVal === 1 && answers.q2) {
+          winner = answers.q2;
+        }
+
+        const model = modelData[winner];
+        resultTitle.textContent = model.name;
+        resultDesc.textContent = model.desc;
+
+        // Monta o link do WhatsApp com mensagem codificada
+        const encodedModel = encodeURIComponent(model.name);
+        const waUrl = `https://wa.me/5562995076301?text=Ol%C3%A1!%20Fiz%20o%20teste%20de%20energia%20no%20site%20e%20meu%20resultado%20foi%20*${encodedModel}*.%20Quero%20saber%20mais!`;
+        waBtn.href = waUrl;
+
+        resultBox.style.display = 'block';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  </script>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
+
+</script>
+</body>
+</html>
